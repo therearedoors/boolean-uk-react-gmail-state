@@ -9,6 +9,22 @@ function App() {
   const [emails,updateEmails] = useState(initialEmails)
   console.log(initialEmails)
 
+  const toggleRead = targetEmail => {
+    const update = emails.map(email =>{
+      if (email === targetEmail) return {...email, read: !email.read}
+      else return email
+    })
+    updateEmails(update)
+  }
+
+  const toggleStarred = targetEmail => {
+    const update = emails.map(email => {
+      if (email === targetEmail) return {...email, starred: !email.starred}
+      else return email
+    })
+    updateEmails(update)
+  }
+
   return (
     <div className="app">
       <Header />
@@ -48,12 +64,15 @@ function App() {
             <input
               className="select-checkbox"
               type="checkbox"
+              onChange = {() => toggleRead(email)}
+              checked = {email.read}
               />
             </div>
             <div className="star">
             <input
             className="star-checkbox"
             type="checkbox"
+            onChange = {() => toggleStarred(email)}
             checked = {email.starred}
             />
             </div>
