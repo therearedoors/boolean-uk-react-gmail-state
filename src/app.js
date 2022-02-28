@@ -7,6 +7,7 @@ import './styles/app.css'
 
 function App() {
   const [emails,updateEmails] = useState(initialEmails)
+  const [readAreHidden,updateHideRead] = useState(false)
   console.log(initialEmails)
 
   const toggleRead = targetEmail => {
@@ -24,6 +25,28 @@ function App() {
     })
     updateEmails(update)
   }
+
+  const emailLiMapper = emails => emails.map(email => 
+    <li key={email.id} className={`email ${email.read ? "read" : "unread"}`}>
+      <div className="select">
+      <input
+        className="select-checkbox"
+        type="checkbox"
+        onChange = {() => toggleRead(email)}
+        checked = {email.read}
+        />
+      </div>
+      <div className="star">
+      <input
+      className="star-checkbox"
+      type="checkbox"
+      onChange = {() => toggleStarred(email)}
+      checked = {email.starred}
+      />
+      </div>
+      <div className="sender">{email.sender}</div>
+      <div className="title">{email.title}</div>
+    </li>)
 
   return (
     <div className="app">
@@ -51,34 +74,14 @@ function App() {
               id="hide-read"
               type="checkbox"
               checked={false}
-              // onChange={() => {}}
+              onChange={() => updateHideRead(!readAreHidden)}
             />
           </li>
         </ul>
       </nav>
       <main className="emails">
         <ul>
-          {emails.map(email => 
-          <li key={email.id} className={`email ${email.read ? "read" : "unread"}`}>
-            <div className="select">
-            <input
-              className="select-checkbox"
-              type="checkbox"
-              onChange = {() => toggleRead(email)}
-              checked = {email.read}
-              />
-            </div>
-            <div className="star">
-            <input
-            className="star-checkbox"
-            type="checkbox"
-            onChange = {() => toggleStarred(email)}
-            checked = {email.starred}
-            />
-            </div>
-            <div className="sender">{email.sender}</div>
-            <div className="title">{email.title}</div>
-          </li>)}
+          {readAreHidden ? emailLiMapper(emails.filter(email => email.read === true)) : emailLiMapper(emails)}
         </ul>  
       </main>
     </div>
