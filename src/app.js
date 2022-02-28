@@ -8,6 +8,7 @@ import './styles/app.css'
 function App() {
   const [emails,updateEmails] = useState(initialEmails)
   const [readAreHidden,updateHideRead] = useState(false)
+  const [currentTab,updateCurrentTab] = useState("inbox")
   console.log(initialEmails)
 
   const toggleRead = targetEmail => {
@@ -48,22 +49,27 @@ function App() {
       <div className="title">{email.title}</div>
     </li>)
 
+  const getEmailsToShow = () => {
+    const toShow = readAreHidden ? emails.filter(email => email.read === false) : emails
+    if (currentTab === "starred") return emailLiMapper(toShow.filter(email => email.starred === true))
+    else return emailLiMapper(toShow)
+  }
+
   return (
     <div className="app">
       <Header />
       <nav className="left-menu">
         <ul className="inbox-list">
           <li
-            className="item active"
-            // onClick={() => {}}
+            className={`item ${currentTab === "inbox" && "active"}`}
+            onClick={() => updateCurrentTab("inbox")}
           >
             <span className="label">Inbox</span>
             <span className="count">{emails.reduce((a,b)=>a+!b.read,0)}</span>
           </li>
           <li
-            className="item"
-            // onClick={() => {}}
-          >
+            className={`item ${currentTab === "starred" && "active"}`}
+            onClick={() => updateCurrentTab("starred")}>
             <span className="label">Starred</span>
             <span className="count">{emails.reduce((a,b)=>a+b.starred,0)}</span>
           </li>
@@ -73,7 +79,7 @@ function App() {
             <input
               id="hide-read"
               type="checkbox"
-              checked={false}
+              checked={readAreHidden}
               onChange={() => updateHideRead(!readAreHidden)}
             />
           </li>
@@ -81,7 +87,7 @@ function App() {
       </nav>
       <main className="emails">
         <ul>
-          {readAreHidden ? emailLiMapper(emails.filter(email => email.read === true)) : emailLiMapper(emails)}
+          {getEmailsToShow()}
         </ul>  
       </main>
     </div>
